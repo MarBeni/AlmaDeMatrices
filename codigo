@@ -1,0 +1,247 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using System.IO;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+
+
+
+namespace Proyecto_3er_parcial
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            int op=0;
+            char r;
+            
+
+
+
+            do
+            {
+                Console.WriteLine("=============Menu=============");
+                Console.WriteLine("¿Qué operación desea realizar?");
+                Console.WriteLine("1._Suma");
+                Console.WriteLine("2._Resta");
+                Console.WriteLine("3._Multiplcación");
+                Console.WriteLine("4._Salir");
+                op = int.Parse(Console.ReadLine());
+                //Swich para cada caso
+                switch (op)
+                {
+                    case 1:
+                        float[,] matzS1,matzS2,matzS3;
+
+                        Console.WriteLine("====Sumaremos 2 Matrices====");
+                        Console.WriteLine("Ingrese datos de la Primera Matriz");
+                        matzS1 = llenado_de_matriz("Primera");
+                        Console.WriteLine("Ingrese datos de la Segunda Matriz");
+                        matzS2 = llenado_de_matriz("Segunda");
+                        Console.WriteLine("Matrices Ingresadas");
+                        imprimir_matriz(matzS1,"Primera");
+                        imprimir_matriz(matzS2, "Segunda");
+                        matzS3 = MatzSum(matzS1,matzS2);
+                        ArchGenerator(matzS3);
+                       
+
+                        break;
+                    case 2:
+                        float[,] matzR1, matzR2, matzR3;
+
+                        Console.WriteLine("====Restaremos 2 Matrices====");
+                        Console.WriteLine("Ingrese datos de la Primera Matriz");
+                        matzR1 = llenado_de_matriz("Primera");
+                        Console.WriteLine("Ingrese datos de la Segunda Matriz");
+                        matzR2 = llenado_de_matriz("Segunda");
+                        Console.WriteLine("Matrices Ingresadas");
+                        imprimir_matriz(matzR1, "Primera");
+                        imprimir_matriz(matzR2, "Segunda");
+                        matzR3 = MatzRes(matzR1, matzR2);
+                        ArchGenerator(matzR3);
+
+                        break;
+                    case 3:
+                        float[,] matzM1, matzM2, matzM3;
+                        Console.WriteLine("====Multiplicaremos 2 Matrices====");
+                        Console.WriteLine("Ingrese datos de la Primera Matriz");
+                        matzM1 = llenado_de_matriz("Primera");
+                        Console.WriteLine("Ingrese datos de la Segunda Matriz");
+                        matzM2 = llenado_de_matriz("Segunda");
+                        Console.WriteLine("Matrices Ingresadas");
+                        imprimir_matriz(matzM1, "Primera");
+                        imprimir_matriz(matzM2, "Segunda");
+                        matzM3 = MatzMul(matzM1, matzM2);
+                        ArchGenerator(matzM3);
+                        break;
+                    case 4:
+                        
+                        Environment.Exit(0);
+                        break;
+                }
+                Console.WriteLine("Desea ingresar otros datos S/N");
+                r = char.ToUpper(char.Parse(Console.ReadLine()));
+                
+            } while (r !='N');
+            Console.WriteLine("Gracias por usar este programa!!!!");
+            Console.ReadKey();
+            
+            Environment.Exit(0);
+        }
+        //Funciones correspondientes 
+        static float[,] llenado_de_matriz(string matz)// esta función nos sive para lelnar cada mastris asi no evitamos el hacer una por una
+        {
+            float[,] mat;
+            bool op;
+            int fil, col;
+            Console.WriteLine("Cuantas Filas vas a ingresar en la {0} matriz", matz);
+            fil = int.Parse(Console.ReadLine());
+            Console.WriteLine("Cuantas Columnas vas a ingresar en la {0} matriz", matz);
+            col = int.Parse(Console.ReadLine());
+            mat = new float[fil, col];
+            for (int f = 0; f < fil; f++)
+            {
+                for (int c = 0; c < col; c++)
+                {
+                    do 
+                    { 
+                        try//De una agrego la validación 
+                        {
+                            Console.WriteLine("ingrese posicion [" + f + "," + c + "]");
+                            mat[f, c] = int.Parse(Console.ReadLine());
+                            op = false;
+                        }
+                        catch (Exception)
+                        {
+                            Console.WriteLine("error");
+                            op = true;
+                        }
+                    } while (op == true) ;
+                
+                }   
+            }
+            return mat;
+        }
+        //============================================================================
+        static void imprimir_matriz(float[,] matriz, string num_matriz)
+        {
+            // Aqui uso foreach para imprimi r mas rapido y con menos codigo las matrices que se lespida en los arametros
+            Console.WriteLine("Valores para la {0}",num_matriz);
+            foreach(float num in matriz)
+            {
+                Console.WriteLine(num);
+            }
+        }
+        //============================================================================
+        static void ArchGenerator(float [,] matzC)
+        {
+            //Genero el Atchivon TXT
+            StreamWriter archivoNuevo;
+            archivoNuevo = File.CreateText("Matriz.txt"); 
+            archivoNuevo.WriteLine(matzC);
+            archivoNuevo.Close();
+            Console.WriteLine("La Matriz Resultante del Calculo Elegido fue almacenada en el archivo Matriz.txt");
+
+
+
+        }
+        //============================================================================
+        static float[,] MatzSum(float[,] matzA, float[,] matzB)
+        {
+            float[,] sum;
+            //Aqui pues umamos la matris una con otra segun los parametro usando for para cad uno de los datos y estos son sumados como si se fuera a imprimir por for pero en lugar de eso se suma
+            if((matzA.GetLength(0)== matzB.GetLength(0)) && (matzA.GetLength(1) == matzB.GetLength(1)))
+            {
+
+                int fil = matzA.GetLength(0);
+                int col = matzB.GetLength(0);
+                sum = new float[fil, col];
+                for (int f = 0; f < fil; f++)
+                {
+                    for (int c = 0; c < col; c++)
+                    {
+                        sum[f, c] = matzA[f, c] + matzB[f, c];
+
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("No se puede realizar la operación con las matrices indicadas");
+                sum = null;
+            }
+            Console.WriteLine("Valores de Matriz resultante");
+            foreach (float num in sum)
+            {
+                Console.WriteLine(num);
+            }
+            return sum;
+        }
+        //============================================================================
+        static float[,] MatzRes(float[,] matzA, float[,] matzB)
+        {
+            float[,] res;
+            //Lomismo que en l suma pero con resta
+            if ((matzA.GetLength(0) == matzB.GetLength(0)) && (matzA.GetLength(1) == matzB.GetLength(1)))
+            {
+
+                int fil = matzA.GetLength(0);
+                int col = matzB.GetLength(0);
+                res = new float[fil, col];
+                for (int f = 0; f < fil; f++)
+                {
+                    for (int c = 0; c < col; c++)
+                    {
+                        res[f, c] = matzA[f, c] - matzB[f, c];
+
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("No se puede realizar la operación con las matrices indicadas");
+                res = null;
+            }
+            Console.WriteLine("Valores de Matriz resultante");//Ago que impima de una este resultado para evitar llamar a la otra fición inutil lose pero es un estilo personal
+            foreach (float num in res)
+            {
+                Console.WriteLine(num);
+            }
+            return res;
+        }
+        static float[,] MatzMul(float[,] matzA, float[,] matzB)
+        {
+            //Verdaderamente complicado dado aque no solo se multiplica si no se suma asi que basado en la logica de la multiplicación de matrices se terina usando 3 for
+            float[,] mul;
+            int filA = matzA.GetLength(0);
+            int colA = matzA.GetLength(1);
+            int filB = matzB.GetLength(0);
+            int colB = matzB.GetLength(1);
+
+                mul = new float[filA, colB];
+                for(int x = 0; x < colB; x++)
+                {
+                    for(int f = 0; f < filA; f++)
+                    {
+                        float sum = 0;
+                        for (int c=0;c<colA;c++)
+                        {
+                            sum += matzA[f, c] * matzB[f, c];
+                        }
+                        mul[f, x] = sum;
+                    }
+                }
+            Console.WriteLine("Valores de Matriz resultante");
+            foreach (float num in mul)
+            {
+                Console.WriteLine(num);
+            }
+            return mul;
+        }
+    }
+}
